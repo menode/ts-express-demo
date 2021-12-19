@@ -84,5 +84,5 @@ test.js
 log
 .DS_Store
 temp
-dist/
+
 test-dist/

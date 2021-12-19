@@ -4,22 +4,97 @@ extends layout
 
 block content
   
-  .row(style="margin-top:15px;")
-    .list-group
-    table.table.table-hover.table-striped
-     thead
-        tr
-          th 配置站点
-          th 操作
-      tbody
-      
+  nav.navbar.navbar-inverse.navbar-fixed-top
+    .container-fluid
+      .navbar-header
+        button.navbar-toggle.collapsed(type='button' data-toggle='collapse' data-target='#navbar' aria-expanded='false' aria-controls='navbar')
+          span.sr-only Toggle navigation
+          span.icon-bar
+          span.icon-bar
+          span.icon-bar
+        a.navbar-brand(href='#') 网关监听服务
+      //- #navbar.navbar-collapse.collapse
+      //-   ul.nav.navbar-nav.navbar-right
+      //-     li
+      //-       a(href='#') Dashboard
+      //-     li
+      //-       a(href='#') Settings
+      //-     li
+      //-       a(href='#') Profile
+      //-     li
+      //-       a(href='#') Help
+      //-   form.navbar-form.navbar-right
+      //-     input.form-control(type='text' placeholder='Search...')
+  .container-fluid
+    .row
+      .col-sm-3.col-md-2.sidebar
+        ul.nav.nav-sidebar
+          li.active
+            a(href='#')
+              | 在线状态 
+              span.sr-only (current)
+         
+        
+      .col-sm-9.col-sm-offset-3.col-md-10.col-md-offset-2.main
+        //- h1.page-header Dashboard
+        //- .row.placeholders
+        //-   .col-xs-6.col-sm-3.placeholder
+        //-     img.img-responsive(src='data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==' width='200' height='200' alt='Generic placeholder thumbnail')
+        //-     h4 Label
+        //-     span.text-muted Something else
+        //-   .col-xs-6.col-sm-3.placeholder
+        //-     img.img-responsive(src='data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==' width='200' height='200' alt='Generic placeholder thumbnail')
+        //-     h4 Label
+        //-     span.text-muted Something else
+        //-   .col-xs-6.col-sm-3.placeholder
+        //-     img.img-responsive(src='data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==' width='200' height='200' alt='Generic placeholder thumbnail')
+        //-     h4 Label
+        //-     span.text-muted Something else
+        //-   .col-xs-6.col-sm-3.placeholder
+        //-     img.img-responsive(src='data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==' width='200' height='200' alt='Generic placeholder thumbnail')
+        //-     h4 Label
+        //-     span.text-muted Something else
+        h2.sub-header 网关列表
+        .table-responsive
+          table.table.table-striped
+            thead
+              tr
+                th 名称
+                th 状态
+                th 更新时间
+            tbody.gatewayList
+              
+                
+              
+
+        
  
-  //- script(src='/lib/socket.io/client-dist/socket.io.js')
-  //- script.
-  //-   $(document).ready(function(){
-  //-     const socket=io();
-  //-     $("#test").click(function(){
-  //-       socket.emit('test', "test"
-  //-       );
-  //-     });
-  //-   });
+  script(src='/lib/socket.io/client-dist/socket.io.js')
+  script.
+    //获取新添加行的数值
+        
+    $(document).ready(function(){
+      const socket=io();
+      let gatewaylist = {};
+      socket.on('connect',()=>{
+        console.log(socket.id);
+      })
+      socket.on('gateway',(d)=>{
+        gatewaylist[d.gateway] = d;
+        var html = '';
+        _.map(gatewaylist,(gateway)=>{
+          let nowdate =  Date.now();
+          let timer = new Date(gateway.time).getTime();
+          if(nowdate > (timer+5*60*1000)) gateway.status  = false
+          
+          html = html + '<tr >'
+          html = html + `<td>${gateway.gateway}</td>`
+          html = html + `<td>${gateway.status}</td>`
+          html = html + `<td>${gateway.time}</td>`
+          html = html + '</tr>'
+        })
+        $(".gatewayList").html(html);;
+      })
+    
+
+    });
